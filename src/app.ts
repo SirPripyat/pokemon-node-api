@@ -25,7 +25,9 @@ class App {
   private async database(): Promise<void> {
     try {
       mongoose.set("strictQuery", true);
-      await mongoose.connect("mongodb://localhost:27017/pokemon-node-api");
+      await mongoose.connect(
+        "mongodb+srv://LeonardoRossi-8:2SBXC7FjSkSas5ud@cluster0.ayrxr.mongodb.net/",
+      );
       console.log("Connect database success");
     } catch (error) {
       console.error(`Connect database fail: ${error}`);
