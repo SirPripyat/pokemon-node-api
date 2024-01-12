@@ -4,6 +4,8 @@ import { PokemonResponse } from "../types/pokemonResponse";
 import { PokemonTypes } from "../types/pokemonTypes";
 import { Pokemon } from "../types/pokemon";
 import pokemonSchema from "./pokemon.schema";
+import { NUMBER_OF_POKEMONS_ON_PAGINATION } from "../constants/numberOfPokemonsOnPagination";
+import { GetAllPokemonsResponse } from "../types/getAllPokemonsResponse";
 
 export class PokemonService {
   public async createPokemon() {
@@ -65,8 +67,30 @@ export class PokemonService {
       return name;
     });
 
-  public async getAllPokemons(): Promise<any> {
-    return await pokemonSchema.find();
+  public async getAllPokemons(
+    page: string,
+  ): Promise<GetAllPokemonsResponse | void> {
+    if (!page) return;
+
+    const parsePageToInt = parseInt(page);
+
+    const pokemons = (await pokemonSchema
+      .find()
+      .sort({ index: 1 })
+      .limit(NUMBER_OF_POKEMONS_ON_PAGINATION)
+      .skip(NUMBER_OF_POKEMONS_ON_PAGINATION * (parsePageToInt - 1))
+      .exec()) as Pokemon[];
+
+    const countPages = await pokemonSchema.countDocuments();
+
+    const totalPages = Math.ceil(countPages / NUMBER_OF_POKEMONS_ON_PAGINATION);
+
+    return {
+      pokemons,
+      numberOfPokemons: await pokemonSchema.countDocuments(),
+      currentPage: parsePageToInt,
+      totalPages,
+    };
   }
 
   public async getPokemonById(id: string): Promise<any> {
