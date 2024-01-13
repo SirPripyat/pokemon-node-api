@@ -122,7 +122,6 @@ export class PokemonService {
   }
 
   public async getPokemonByName(name: string): Promise<any> {
-    console.log(name);
     return await pokemonSchema.find({ name: name });
   }
 }
