@@ -14,10 +14,11 @@ class PokemonController {
 
   public async getAllPokemons(req: Request, res: Response) {
     try {
-      const { page } = req.query;
+      const { page, search } = req.query;
 
       const pokemons = await new PokemonService().getAllPokemons(
         page as string,
+        search as string,
       );
 
       return res.status(200).json(pokemons);
