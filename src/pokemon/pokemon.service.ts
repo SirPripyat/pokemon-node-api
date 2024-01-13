@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { PokemonsUrlType } from "../types/pokemonsUrl";
 import { PokemonResponse } from "../types/pokemonResponse";
 import { PokemonTypes } from "../types/pokemonTypes";
@@ -6,6 +6,7 @@ import { Pokemon } from "../types/pokemon";
 import pokemonSchema from "./pokemon.schema";
 import { NUMBER_OF_POKEMONS_ON_PAGINATION } from "../constants/numberOfPokemonsOnPagination";
 import { GetAllPokemonsResponse } from "../types/getAllPokemonsResponse";
+import { Query } from "mongoose";
 
 export class PokemonService {
   public async createPokemon() {
@@ -69,27 +70,50 @@ export class PokemonService {
 
   public async getAllPokemons(
     page: string,
-  ): Promise<GetAllPokemonsResponse | void> {
-    if (!page) return;
-
+    search: string,
+  ): Promise<GetAllPokemonsResponse> {
     const parsePageToInt = parseInt(page);
+    const searchParam = search ?? "";
 
-    const pokemons = (await pokemonSchema
-      .find()
+    const query: Query<Pokemon[], Pokemon> = pokemonSchema.find({
+      name: { $regex: searchParam, $options: "i" },
+    });
+
+    const pokemons = (await query
       .sort({ index: 1 })
       .limit(NUMBER_OF_POKEMONS_ON_PAGINATION)
       .skip(NUMBER_OF_POKEMONS_ON_PAGINATION * (parsePageToInt - 1))
       .exec()) as Pokemon[];
 
-    const countPages = await pokemonSchema.countDocuments();
-
-    const totalPages = Math.ceil(countPages / NUMBER_OF_POKEMONS_ON_PAGINATION);
+    const { totalPages, numberOfPokemons } =
+      await this.calculateTotalPagesForPagination(searchParam);
 
     return {
-      pokemons,
-      numberOfPokemons: await pokemonSchema.countDocuments(),
-      currentPage: parsePageToInt,
+      numberOfPokemons,
+      currentPage: parsePageToInt ? parsePageToInt : 1,
       totalPages,
+      pokemons,
+    };
+  }
+
+  private async calculateTotalPagesForPagination(
+    searchParam: string,
+  ): Promise<{ totalPages: number; numberOfPokemons: number }> {
+    const getPokemonQueryResult = await pokemonSchema
+      .find({
+        name: { $regex: searchParam, $options: "i" },
+      })
+      .exec();
+
+    const pokemonQueryLength = getPokemonQueryResult.length;
+
+    const totalPages = Math.ceil(
+      pokemonQueryLength / NUMBER_OF_POKEMONS_ON_PAGINATION,
+    );
+
+    return {
+      totalPages,
+      numberOfPokemons: pokemonQueryLength,
     };
   }
 
@@ -98,7 +122,6 @@ export class PokemonService {
   }
 
   public async getPokemonByName(name: string): Promise<any> {
-    console.log(name);
     return await pokemonSchema.find({ name: name });
   }
 }
