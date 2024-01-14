@@ -7,6 +7,7 @@ import pokemonSchema from "./pokemon.schema";
 import { NUMBER_OF_POKEMONS_ON_PAGINATION } from "../constants/numberOfPokemonsOnPagination";
 import { GetAllPokemonsResponse } from "../types/getAllPokemonsResponse";
 import { Query } from "mongoose";
+import { parse } from "dotenv";
 
 export class PokemonService {
   public async createPokemon() {
@@ -72,49 +73,53 @@ export class PokemonService {
     page: string,
     search: string,
   ): Promise<GetAllPokemonsResponse> {
-    const parsePageToInt = parseInt(page);
+    const currentPage = parseInt(page) || 1;
     const searchParam = search ?? "";
 
-    const query: Query<Pokemon[], Pokemon> = pokemonSchema.find({
-      name: { $regex: searchParam, $options: "i" },
-    });
-
-    const pokemons = (await query
-      .sort({ index: 1 })
-      .limit(NUMBER_OF_POKEMONS_ON_PAGINATION)
-      .skip(NUMBER_OF_POKEMONS_ON_PAGINATION * (parsePageToInt - 1))
-      .exec()) as Pokemon[];
-
+    const pokemons = await this.getPokemons(currentPage, searchParam);
     const { totalPages, numberOfPokemons } =
-      await this.calculateTotalPagesForPagination(searchParam);
+      await this.calculateTotalPagesForPagination();
 
     return {
       numberOfPokemons,
-      currentPage: parsePageToInt ? parsePageToInt : 1,
+      currentPage,
       totalPages,
       pokemons,
     };
   }
 
-  private async calculateTotalPagesForPagination(
+  private async getPokemons(
+    page: number,
     searchParam: string,
-  ): Promise<{ totalPages: number; numberOfPokemons: number }> {
-    const getPokemonQueryResult = await pokemonSchema
-      .find({
-        name: { $regex: searchParam, $options: "i" },
-      })
-      .exec();
+  ): Promise<Pokemon[]> {
+    const query = this.getPokemonQuery(searchParam);
 
-    const pokemonQueryLength = getPokemonQueryResult.length;
+    return (await query
+      .sort({ index: 1 })
+      .limit(NUMBER_OF_POKEMONS_ON_PAGINATION)
+      .skip(NUMBER_OF_POKEMONS_ON_PAGINATION * (page - 1))
+      .exec()) as Pokemon[];
+  }
 
+  private async calculateTotalPagesForPagination(): Promise<{
+    totalPages: number;
+    numberOfPokemons: number;
+  }> {
+    const numberOfPokemons = await pokemonSchema.countDocuments();
     const totalPages = Math.ceil(
-      pokemonQueryLength / NUMBER_OF_POKEMONS_ON_PAGINATION,
+      numberOfPokemons / NUMBER_OF_POKEMONS_ON_PAGINATION,
     );
 
-    return {
-      totalPages,
-      numberOfPokemons: pokemonQueryLength,
-    };
+    return { totalPages, numberOfPokemons };
+  }
+
+  private getPokemonQuery(searchParam: string): Query<Pokemon[], Pokemon> {
+    return pokemonSchema.find({
+      name: {
+        $regex: searchParam,
+        $options: "i",
+      },
+    });
   }
 
   public async getPokemonById(id: string): Promise<any> {
