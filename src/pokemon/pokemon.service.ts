@@ -7,7 +7,6 @@ import pokemonSchema from "./pokemon.schema";
 import { NUMBER_OF_POKEMONS_ON_PAGINATION } from "../constants/numberOfPokemonsOnPagination";
 import { GetAllPokemonsResponse } from "../types/getAllPokemonsResponse";
 import { Query } from "mongoose";
-import { parse } from "dotenv";
 
 export class PokemonService {
   public async createPokemon() {
