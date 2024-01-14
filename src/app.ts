@@ -2,6 +2,7 @@ import express from "express";
 import routes from "./routes";
 import mongoose from "mongoose";
 import cors from "cors";
+import dotenv from "dotenv";
 
 class App {
   public express: express.Application;
@@ -16,6 +17,11 @@ class App {
   public middleware(): void {
     this.express.use(express.json());
     this.express.use(cors());
+
+    dotenv.config();
+    dotenv.configDotenv({
+      path: ".env.local",
+    });
   }
 
   public routes(): void {
@@ -24,10 +30,10 @@ class App {
 
   private async database(): Promise<void> {
     try {
+      const databaseUrlConnection = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}`;
+
       mongoose.set("strictQuery", true);
-      await mongoose.connect(
-        "mongodb+srv://LeonardoRossi-8:2SBXC7FjSkSas5ud@cluster0.ayrxr.mongodb.net/",
-      );
+      await mongoose.connect(databaseUrlConnection);
       console.log("Connect database success");
     } catch (error) {
       console.error(`Connect database fail: ${error}`);
