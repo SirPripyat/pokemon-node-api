@@ -40,7 +40,7 @@ export class GetAllPokemonService {
     const query = this.getPokemonQuery(searchParam, typesParam);
 
     return (await query
-      .sort({ index: 1 })
+      .sort({ "basicInformation.index": 1 })
       .limit(NUMBER_OF_POKEMONS_ON_PAGINATION)
       .skip(NUMBER_OF_POKEMONS_ON_PAGINATION * (page - 1))
       .exec()) as Pokemon[];
@@ -83,7 +83,7 @@ export class GetAllPokemonService {
     typesParam: string,
   ): Query<Pokemon[], Pokemon> {
     const baseQuery: Record<string, any> = {
-      name: {
+      "basicInformation.name": {
         $regex: searchParam,
         $options: "i",
       },
