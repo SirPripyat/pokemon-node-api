@@ -30,18 +30,6 @@ class PokemonController {
     }
   }
 
-  public async getPokemonById(req: Request, res: Response) {
-    try {
-      const { id } = req.params;
-
-      const pokemon = await new GetPokemonService().getPokemonById(id);
-
-      return res.status(200).json(pokemon);
-    } catch (error) {
-      return res.status(500).json(`Internal server error: ${error}`);
-    }
-  }
-
   public async getPokemonByName(req: Request, res: Response) {
     try {
       const { name } = req.params;
