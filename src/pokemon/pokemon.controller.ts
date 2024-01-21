@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
-import { PokemonService } from "./pokemon.service";
+import { CreatePokemonService } from "./service/create-pokemon.service";
+import { GetPokemonService } from "./service/get-pokemon.service";
+import { GetAllPokemonService } from "./service/get-all-pokemon.service";
 
 class PokemonController {
   public async createPokemon(req: Request, res: Response) {
     try {
-      const pokemonUrls = await new PokemonService().createPokemon();
+      const pokemonUrls = await new CreatePokemonService().createPokemon();
 
       return res.status(200).json(pokemonUrls);
     } catch (error) {
@@ -16,7 +18,7 @@ class PokemonController {
     try {
       const { page, search, types } = req.query;
 
-      const pokemons = await new PokemonService().getAllPokemons(
+      const pokemons = await new GetAllPokemonService().getAllPokemons(
         page as string,
         search as string,
         types as string,
@@ -32,7 +34,7 @@ class PokemonController {
     try {
       const { id } = req.params;
 
-      const pokemon = await new PokemonService().getPokemonById(id);
+      const pokemon = await new GetPokemonService().getPokemonById(id);
 
       return res.status(200).json(pokemon);
     } catch (error) {
@@ -44,7 +46,7 @@ class PokemonController {
     try {
       const { name } = req.params;
 
-      const pokemon = await new PokemonService().getPokemonByName(name);
+      const pokemon = await new GetPokemonService().getPokemonByName(name);
 
       return res.status(200).json(pokemon);
     } catch (error) {
