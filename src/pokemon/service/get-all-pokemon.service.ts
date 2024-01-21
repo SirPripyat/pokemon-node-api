@@ -82,19 +82,20 @@ export class GetAllPokemonService {
     searchParam: string,
     typesParam: string,
   ): Query<Pokemon[], Pokemon> {
-    const baseQuery: Record<string, any> = {
+    const query: Record<string, any> = {
       "basicInformation.name": {
         $regex: searchParam,
         $options: "i",
       },
     };
 
-    if (typesParam.length > 0) {
-      baseQuery.pokemonTypes = {
+    const typesParamsExists = typesParam.length > 0;
+
+    if (typesParamsExists)
+      query["basicInformation.pokemonTypes"] = {
         $in: typesParam,
       };
-    }
 
-    return pokemonSchema.find(baseQuery);
+    return pokemonSchema.find(query);
   }
 }
