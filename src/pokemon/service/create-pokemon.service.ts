@@ -9,13 +9,11 @@ import { BaseStats } from "../../types/pokemonBaseStats";
 
 type StatsReduce = {
   [key: string]: number;
-}
+};
 
 export class CreatePokemonService {
   public async createPokemon(): Promise<void> {
     const pokemon = await this.fetchPokemonData();
-
-    console.log(pokemon[1]);
 
     await pokemonSchema.create(pokemon);
   }
@@ -51,17 +49,15 @@ export class CreatePokemonService {
     };
   }
 
-  private buildPokemonBasicInformation(
-    {
-      id,
-      name,
-      types,
-      sprites: { other },
-      weight,
-      height,
-      abilities,
-    }: PokemonResponse,
-  ): BasicInformation {
+  private buildPokemonBasicInformation({
+    id,
+    name,
+    types,
+    sprites: { other },
+    weight,
+    height,
+    abilities,
+  }: PokemonResponse): BasicInformation {
     const pokedexNumber = this.addZerosInPokedexNumber(id);
     const pokemonTypes = this.getPokemonTypes(types);
     const pokemonAbilities = this.getPokemonAbilities(abilities);
@@ -93,21 +89,17 @@ export class CreatePokemonService {
   private buildPokemonBaseStats({ stats }: PokemonResponse): BaseStats {
     const pokemonBaseStats = stats.reduce(
       (acc, { base_stat, stat: { name } }) => {
-        if (name === "special-attack")
-          acc["special_attack"] = base_stat;
+        if (name === "special-attack") acc["special_attack"] = base_stat;
 
-        if (name === "special-defense")
-          acc["special_defense"] = base_stat;
-
+        if (name === "special-defense") acc["special_defense"] = base_stat;
 
         acc[name] = base_stat;
 
         return acc;
       },
-      {} as StatsReduce
-    )
+      {} as StatsReduce,
+    );
 
     return pokemonBaseStats as BaseStats;
   }
-
 }
