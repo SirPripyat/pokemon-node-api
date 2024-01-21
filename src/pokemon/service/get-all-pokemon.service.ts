@@ -3,6 +3,7 @@ import { NUMBER_OF_POKEMONS_ON_PAGINATION } from "../../constants/numberOfPokemo
 import { GetAllPokemonsResponse } from "../../types/getAllPokemonsResponse";
 import { Pokemon } from "../../types/pokemon";
 import pokemonSchema from "../pokemon.schema";
+import { GetAllPokemon } from "../../types/getAllPokemon";
 
 type CalculateTotalPagesForPaginationType = {
   totalPages: number;
@@ -18,6 +19,7 @@ export class GetAllPokemonService {
     const currentPage = parseInt(page) || 1;
 
     const pokemons = await this.getPokemons(currentPage, search, types);
+    const pokemonsData = this.handlePokemonData(pokemons);
 
     const { totalPages, numberOfPokemons } =
       await this.calculateTotalPagesForPagination(search, types);
@@ -26,7 +28,7 @@ export class GetAllPokemonService {
       numberOfPokemons,
       currentPage,
       totalPages,
-      pokemons,
+      pokemons: pokemonsData,
     };
   }
 
@@ -42,6 +44,22 @@ export class GetAllPokemonService {
       .limit(NUMBER_OF_POKEMONS_ON_PAGINATION)
       .skip(NUMBER_OF_POKEMONS_ON_PAGINATION * (page - 1))
       .exec()) as Pokemon[];
+  }
+
+  private handlePokemonData(pokemonsData: Pokemon[]): GetAllPokemon[] {
+    return pokemonsData.map(
+      ({
+        basicInformation: { index, name, pokedexNumber, image, pokemonTypes },
+      }) => {
+        return {
+          index,
+          name,
+          pokedexNumber,
+          image,
+          pokemonTypes,
+        };
+      },
+    );
   }
 
   private async calculateTotalPagesForPagination(

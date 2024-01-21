@@ -1,7 +1,7 @@
-import { Pokemon } from "./pokemon";
+import { GetAllPokemon } from "./getAllPokemon";
 
 export type GetAllPokemonsResponse = {
-  pokemons: Pokemon[];
+  pokemons: GetAllPokemon[];
   numberOfPokemons: number;
   currentPage: number;
   totalPages: number;
