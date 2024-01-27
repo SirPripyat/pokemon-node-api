@@ -8,6 +8,11 @@ const routes = Router();
 routes.get("/pokemon", pokemonController.getAllPokemons);
 routes.get("/pokemon/:name", pokemonController.getPokemonByName);
 
+routes.get(
+  "/pokemon-type/:name/:type",
+  pokemonController.getAllPokemonsFromType,
+);
+
 // routes.post("/types", pokemonTypeWeaknessController.createPokemonType);
 routes.get("/types/:typeId", pokemonTypeWeaknessController.getPokemonTypes);
 
