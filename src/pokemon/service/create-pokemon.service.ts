@@ -1,11 +1,11 @@
 import axios from "axios";
-import { PokemonsUrlType } from "../../types/pokemonsUrl";
 import pokemonSchema from "../pokemon.schema";
-import { Pokemon } from "../../types/pokemon";
-import { PokemonResponse } from "../../types/pokemonResponse";
-import { PokemonTypes } from "../../types/pokemonTypes";
 import { BasicInformation } from "../../types/pokemonBasicInformation";
 import { BaseStats } from "../../types/pokemonBaseStats";
+import { Pokemon } from "../../types/pokemon.type";
+import { PokemonResponse } from "../../types/responses/pokemon-response.type";
+import { PokemonTypes } from "../../types/pokemon-types.type";
+import { PokemonUrlResponse } from "../../types/responses/pokemon-url-response.type";
 
 type StatsReduce = {
   [key: string]: number;
@@ -22,18 +22,21 @@ export class CreatePokemonService {
     const pokemonsUrl = await this.getAllPokemonUrl();
 
     const pokemon = pokemonsUrl.map(
-      async (pokemon: PokemonsUrlType) => await this.handlePokemonData(pokemon),
+      async (pokemon: PokemonUrlResponse) =>
+        await this.handlePokemonData(pokemon),
     );
 
     return await Promise.all(pokemon);
   }
 
-  private getAllPokemonUrl = async (): Promise<PokemonsUrlType[]> =>
+  private getAllPokemonUrl = async (): Promise<PokemonUrlResponse[]> =>
     await axios
       .get("https://pokeapi.co/api/v2/pokemon?limit=151")
       .then(({ data: { results } }) => results);
 
-  private async handlePokemonData({ url }: PokemonsUrlType): Promise<Pokemon> {
+  private async handlePokemonData({
+    url,
+  }: PokemonUrlResponse): Promise<Pokemon> {
     const pokemonUrl = url.toString();
 
     const response: PokemonResponse = await axios

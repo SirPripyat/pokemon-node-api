@@ -1,8 +1,9 @@
-import { PokemonTypes } from "./pokemonTypes";
+import { PokemonTypes } from "../pokemon-types.type";
 
 type Types = {
   type: {
     name: PokemonTypes;
+    url: string;
   };
 };
 
@@ -20,14 +21,20 @@ type Abilities = {
   };
 };
 
-type StatsName = "hp" | "attack" | "defense" | "special-attack" | "special-defense" | "speed";
+type StatsName =
+  | "hp"
+  | "attack"
+  | "defense"
+  | "special-attack"
+  | "special-defense"
+  | "speed";
 
 type Stats = {
   base_stat: number;
   stat: {
     name: StatsName;
   };
-}
+};
 
 export type PokemonResponse = {
   id: number;
