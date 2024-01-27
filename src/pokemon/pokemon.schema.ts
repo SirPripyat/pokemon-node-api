@@ -1,6 +1,6 @@
 import { model, Schema } from "mongoose";
 
-const PokmeonSchema = new Schema({
+const PokemonSchema = new Schema({
   basicInformation: {
     index: {
       type: Number,
@@ -49,4 +49,4 @@ const PokmeonSchema = new Schema({
   },
 });
 
-export default model("Pokemon", PokmeonSchema);
+export default model("Pokemon", PokemonSchema);

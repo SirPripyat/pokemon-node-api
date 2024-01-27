@@ -1,7 +1,7 @@
 import { Query } from "mongoose";
 import { NUMBER_OF_POKEMONS_ON_PAGINATION } from "../../constants/numberOfPokemonsOnPagination";
 import { GetAllPokemonsResponse } from "../../types/getAllPokemonsResponse";
-import { Pokemon } from "../../types/pokemon";
+import { Pokemon } from "../../types/pokemon.type";
 import pokemonSchema from "../pokemon.schema";
 import { GetAllPokemon } from "../../types/getAllPokemon";
 
