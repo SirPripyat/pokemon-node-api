@@ -1,4 +1,4 @@
-import { PokemonTypes } from "./pokemonTypes";
+import type { PokemonTypes } from "./pokemon-types.type";
 
 export type BasicInformation = {
   index: number;
