@@ -2,5 +2,5 @@ import { BasicInformation } from "./pokemonBasicInformation";
 
 export type GetAllPokemon = Omit<
   BasicInformation,
-  "weight" | "height" | "abilities"
+  "weight" | "height" | "abilities" | "description"
 >;

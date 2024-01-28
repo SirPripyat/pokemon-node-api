@@ -9,4 +9,5 @@ export type BasicInformation = {
   weight: number;
   height: number;
   abilities: string[];
+  description: string;
 };

@@ -26,6 +26,9 @@ const PokemonSchema = new Schema({
     abilities: {
       type: Array,
     },
+    description: {
+      type: String,
+    },
   },
   baseStats: {
     hp: {
