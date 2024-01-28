@@ -1,5 +1,5 @@
 import { Query } from "mongoose";
-import { NUMBER_OF_POKEMONS_ON_PAGINATION } from "../../constants/numberOfPokemonsOnPagination";
+import { NUMBER_OF_POKEMONS_ON_PAGINATION } from "../../constants/number-of-pokemons-on-pagination";
 import { GetAllPokemonsResponse } from "../../types/getAllPokemonsResponse";
 import { Pokemon } from "../../types/pokemon.type";
 import pokemonSchema from "../pokemon.schema";
