@@ -7,6 +7,9 @@ import { PokemonResponse } from "../../types/responses/pokemon-response.type";
 import { PokemonTypes } from "../../types/pokemon-types.type";
 import { PokemonUrlResponse } from "../../types/responses/pokemon-url-response.type";
 import { FETCH_LIMIT_POKEMONS } from "../../constants/fetch-limit-pokemons";
+import { convertValue } from "../../util/convert-value";
+import { convertFirstLetterToUppercase } from "../../util/convert-first-letter-to-uppercase";
+import { PokemonSpeciesService } from "../../pokemon-species/pokemon-species.service";
 
 type StatsReduce = {
   [key: string]: number;
@@ -42,7 +45,7 @@ export class CreatePokemonService {
       .get(url)
       .then(({ data }) => data);
 
-    const basicInformation = this.buildPokemonBasicInformation(response);
+    const basicInformation = await this.buildPokemonBasicInformation(response);
     const baseStats = this.buildPokemonBaseStats(response);
 
     return {
@@ -51,7 +54,7 @@ export class CreatePokemonService {
     };
   }
 
-  private buildPokemonBasicInformation({
+  private async buildPokemonBasicInformation({
     id,
     name,
     types,
@@ -59,10 +62,12 @@ export class CreatePokemonService {
     weight,
     height,
     abilities,
-  }: PokemonResponse): BasicInformation {
-    const pokedexNumber = this.addZerosInPokedexNumber(id);
+  }: PokemonResponse): Promise<BasicInformation> {
+    const pokedexNumber = this.addHashtagsAndZerosInPokedexNumber(id);
     const pokemonTypes = this.getPokemonTypes(types);
     const pokemonAbilities = this.getPokemonAbilities(abilities);
+    const { flavor_text_entries } =
+      await new PokemonSpeciesService().fetchPokemonSpeciesById(id.toString());
 
     return {
       index: id,
@@ -70,14 +75,16 @@ export class CreatePokemonService {
       pokedexNumber,
       image: other["official-artwork"].front_default,
       pokemonTypes,
-      weight,
-      height,
+      weight: convertValue(weight),
+      height: convertValue(height),
       abilities: pokemonAbilities,
+      description: flavor_text_entries[0].flavor_text,
     };
   }
 
-  private addZerosInPokedexNumber = (pokedexNumber: number): string =>
-    pokedexNumber.toString().padStart(3, "0");
+  private addHashtagsAndZerosInPokedexNumber = (
+    pokedexNumber: number,
+  ): string => "#" + pokedexNumber.toString().padStart(3, "0");
 
   private getPokemonTypes = (types: PokemonResponse["types"]): PokemonTypes[] =>
     types.map(({ type: { name } }) => {
@@ -86,7 +93,10 @@ export class CreatePokemonService {
 
   private getPokemonAbilities = (
     abilities: PokemonResponse["abilities"],
-  ): string[] => abilities.map(({ ability: { name } }) => name);
+  ): string[] =>
+    abilities.map(({ ability: { name } }) =>
+      convertFirstLetterToUppercase(name),
+    );
 
   private buildPokemonBaseStats({ stats }: PokemonResponse): BaseStats {
     const pokemonBaseStats = stats.reduce(

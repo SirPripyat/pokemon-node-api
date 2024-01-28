@@ -60,11 +60,11 @@ export class PokemonTypeService {
     return doubleDamageFrom.map(({ name }) => name);
   }
 
-  public async getPokemonWeakness(
-    typeId: string,
-  ): Promise<Query<PokemonType[], PokemonType>> {
-    return pokemonTypeSchema.find({
+  public async getPokemonWeakness(typeId: string): Promise<PokemonType[]> {
+    const pokemonTypesWeaknesses = (await pokemonTypeSchema.find({
       name: typeId,
-    });
+    })) as PokemonType[];
+
+    return pokemonTypesWeaknesses;
   }
 }
