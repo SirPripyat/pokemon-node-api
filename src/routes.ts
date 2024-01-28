@@ -1,6 +1,7 @@
 import { Router } from "express";
 import pokemonController from "./pokemon/pokemon.controller";
 import pokemonTypeWeaknessController from "./pokemon-type/pokemon-type.controller";
+import evolutionChainController from "./evolution-chain/evolution-chain.controller";
 
 const routes = Router();
 
@@ -15,5 +16,10 @@ routes.get(
 
 // routes.post("/types", pokemonTypeWeaknessController.createPokemonType);
 routes.get("/types/:typeId", pokemonTypeWeaknessController.getPokemonTypes);
+
+routes.get(
+  "/evolution-chain/:id",
+  evolutionChainController.getEvolutionChainById,
+);
 
 export default routes;
