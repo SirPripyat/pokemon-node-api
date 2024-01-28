@@ -5,21 +5,21 @@ import evolutionChainController from "./evolution-chain/evolution-chain.controll
 
 const routes = Router();
 
-// routes.post("/pokemon", pokemonController.createPokemon);
+routes.post("/pokemon", pokemonController.createPokemon);
 routes.get("/pokemon", pokemonController.getAllPokemons);
 routes.get("/pokemon/:name", pokemonController.getPokemonByName);
-
 routes.get(
   "/pokemon-type/:name/:type",
   pokemonController.getAllPokemonsFromType,
 );
 
-// routes.post("/types", pokemonTypeWeaknessController.createPokemonType);
+routes.post("/types", pokemonTypeWeaknessController.createPokemonType);
 routes.get("/types/:typeId", pokemonTypeWeaknessController.getPokemonTypes);
 
+routes.post("/evolution-chain", evolutionChainController.createEvolutionChain);
 routes.get(
-  "/evolution-chain/:id",
-  evolutionChainController.getEvolutionChainById,
+  "/evolution-chain/:name",
+  evolutionChainController.getEvolutionChain,
 );
 
 export default routes;

@@ -6,6 +6,7 @@ import { Pokemon } from "../../types/pokemon.type";
 import { PokemonResponse } from "../../types/responses/pokemon-response.type";
 import { PokemonTypes } from "../../types/pokemon-types.type";
 import { PokemonUrlResponse } from "../../types/responses/pokemon-url-response.type";
+import { FETCH_LIMIT_POKEMONS } from "../../constants/fetch-limit-pokemons";
 
 type StatsReduce = {
   [key: string]: number;
@@ -31,16 +32,14 @@ export class CreatePokemonService {
 
   private getAllPokemonUrl = async (): Promise<PokemonUrlResponse[]> =>
     await axios
-      .get("https://pokeapi.co/api/v2/pokemon?limit=151")
+      .get(`https://pokeapi.co/api/v2/pokemon?limit=${FETCH_LIMIT_POKEMONS}`)
       .then(({ data: { results } }) => results);
 
   private async handlePokemonData({
     url,
   }: PokemonUrlResponse): Promise<Pokemon> {
-    const pokemonUrl = url.toString();
-
     const response: PokemonResponse = await axios
-      .get(pokemonUrl)
+      .get(url)
       .then(({ data }) => data);
 
     const basicInformation = this.buildPokemonBasicInformation(response);
