@@ -1,17 +1,26 @@
 import { Request, Response } from "express";
-import { EvolutionChainService } from "./evolution-chain.service";
+import { CreateEvolutionChainService } from "./service/create-evolution-chain.service";
+import { GetEvolutionChainService } from "./service/get-evolution-chain.service";
 
 class EvolutionChainController {
-  public async getEvolutionChainById(req: Request, res: Response) {
+  public async createEvolutionChain(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      await new CreateEvolutionChainService().createEvolutionChain();
 
-      const evolutionChain =
-        await new EvolutionChainService().getPokemonsFromEvoltionChain(
-          id as string,
-        );
+      return res.status(200).json(`Evolution chain created!`);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-      return res.status(200).json(evolutionChain);
+  public async getEvolutionChain(req: Request, res: Response) {
+    try {
+      const { name } = req.params;
+
+      const pokeEvolutionChain =
+        await new GetEvolutionChainService().getEvolutionChain(name as string);
+
+      return res.status(200).json(pokeEvolutionChain);
     } catch (error) {
       console.log(error);
     }
