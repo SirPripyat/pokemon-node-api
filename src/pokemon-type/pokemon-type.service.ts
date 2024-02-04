@@ -59,6 +59,7 @@ export class PokemonTypeService {
   private getTypeDoubleDamageFrom(
     doubleDamageFrom: DamageRelationsResponse["double_damage_from"],
   ): PokemonTypes[] {
+    if (!doubleDamageFrom) return [];
     return doubleDamageFrom.map(({ name }) => name);
   }
 
