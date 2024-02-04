@@ -7,7 +7,7 @@ import { PokemonResponse } from "../../types/responses/pokemon-response.type";
 import { PokemonTypes } from "../../types/pokemon-types.type";
 import { PokemonUrlResponse } from "../../types/responses/pokemon-url-response.type";
 import { FETCH_LIMIT_POKEMONS } from "../../constants/fetch-limit-pokemons";
-import { convertValue } from "../../util/convert-value";
+import { convertUnitMeasureValue } from "../../util/convert-unit-measure-value";
 import { convertFirstLetterToUppercase } from "../../util/convert-first-letter-to-uppercase";
 import { PokemonSpeciesService } from "../../pokemon-species/pokemon-species.service";
 
@@ -75,8 +75,8 @@ export class CreatePokemonService {
       pokedexNumber,
       image: other["official-artwork"].front_default,
       pokemonTypes,
-      weight: convertValue(weight),
-      height: convertValue(height),
+      weight: convertUnitMeasureValue(weight),
+      height: convertUnitMeasureValue(height),
       abilities: pokemonAbilities,
       description: flavor_text_entries[0].flavor_text,
     };
