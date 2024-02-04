@@ -25,6 +25,14 @@ describe("Should test convertFirstLetterToUppercase function", () => {
     expect(result).toBe("");
   });
 
+  it("Should return a uppercase string if the input has only one letter", () => {
+    const stringToBeConverted = "p";
+
+    const result = convertFirstLetterToUppercase(stringToBeConverted);
+
+    expect(result).toBe("P");
+  });
+
   it("Should return an empty string if the input is not a string", () => {
     const stringToBeConverted = 123;
 
