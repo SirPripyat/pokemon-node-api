@@ -6,4 +6,4 @@ pnpm-lock.yaml
 
 .env.local
 
-coverage
+coverage/
