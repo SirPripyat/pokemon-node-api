@@ -8,7 +8,8 @@
     "build": "tsup src",
     "postinstall": "tsup src",
     "start": "node dist/server.js",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "keywords": [],
   "author": "",
