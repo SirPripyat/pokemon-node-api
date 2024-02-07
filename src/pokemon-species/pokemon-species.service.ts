@@ -12,16 +12,20 @@ export class PokemonSpeciesService {
       .then(({ data: { results } }) => results);
   }
 
-  public async handlePokemonSpeciesUrl(
-    url: PokemonUrlResponse["url"],
-  ): Promise<string> {
+  public handlePokemonSpeciesUrl(url: PokemonUrlResponse["url"]): string {
+    if (!url) return "";
+
     const splitUrl = url.split("/");
 
     const cleanVoidStrings = splitUrl.filter(string => string !== "");
 
     const [pokemonId] = cleanVoidStrings.reverse();
 
-    return pokemonId;
+    const validPokemonId = parseInt(pokemonId);
+
+    if (!validPokemonId) return "";
+
+    return validPokemonId.toString();
   }
 
   public async fetchPokemonSpeciesById(
