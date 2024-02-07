@@ -7,7 +7,7 @@ import { PokemonResponse } from "../../types/responses/pokemon-response.type";
 import { PokemonTypes } from "../../types/pokemon-types.type";
 import { PokemonUrlResponse } from "../../types/responses/pokemon-url-response.type";
 import { FETCH_LIMIT_POKEMONS } from "../../constants/fetch-limit-pokemons";
-import { convertValue } from "../../util/convert-value";
+import { convertUnitMeasureValue } from "../../util/convert-unit-measure-value";
 import { convertFirstLetterToUppercase } from "../../util/convert-first-letter-to-uppercase";
 import { PokemonSpeciesService } from "../../pokemon-species/pokemon-species.service";
 
@@ -64,7 +64,7 @@ export class CreatePokemonService {
     abilities,
   }: PokemonResponse): Promise<BasicInformation> {
     const pokedexNumber = this.addHashtagsAndZerosInPokedexNumber(id);
-    const pokemonTypes = this.getPokemonTypes(types);
+    const pokemonTypes = this.getPokemonTypes(types) ?? ["water"];
     const pokemonAbilities = this.getPokemonAbilities(abilities);
     const { flavor_text_entries } =
       await new PokemonSpeciesService().fetchPokemonSpeciesById(id.toString());
@@ -75,8 +75,8 @@ export class CreatePokemonService {
       pokedexNumber,
       image: other["official-artwork"].front_default,
       pokemonTypes,
-      weight: convertValue(weight),
-      height: convertValue(height),
+      weight: convertUnitMeasureValue(weight),
+      height: convertUnitMeasureValue(height),
       abilities: pokemonAbilities,
       description: flavor_text_entries[0].flavor_text,
     };
@@ -84,12 +84,33 @@ export class CreatePokemonService {
 
   private addHashtagsAndZerosInPokedexNumber = (
     pokedexNumber: number,
-  ): string => "#" + pokedexNumber.toString().padStart(3, "0");
+  ): string => {
+    const pokedexNumberIsPositive = pokedexNumber >= 0;
 
-  private getPokemonTypes = (types: PokemonResponse["types"]): PokemonTypes[] =>
-    types.map(({ type: { name } }) => {
+    if (
+      typeof pokedexNumber !== "number" ||
+      !pokedexNumberIsPositive ||
+      !pokedexNumber
+    )
+      return "#000";
+
+    const convertPokedexNumberToString = pokedexNumber.toString();
+    const addZerosBeforeString = convertPokedexNumberToString.padStart(3, "0");
+
+    return `#${addZerosBeforeString}`;
+  };
+
+  private getPokemonTypes = (
+    types: PokemonResponse["types"],
+  ): PokemonTypes[] | void => {
+    const typesIsArray = Array.isArray(types);
+
+    if (!typesIsArray) return;
+
+    return types.map(({ type: { name } }) => {
       return name;
     });
+  };
 
   private getPokemonAbilities = (
     abilities: PokemonResponse["abilities"],

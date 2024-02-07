@@ -8,13 +8,15 @@ import {
   PokemonTypeResponse,
 } from "../types/responses/pokemon-type-response.type";
 import { PokemonTypes } from "../types/pokemon-types.type";
-import { Query } from "mongoose";
+import { POKEMON_TYPES } from "../constants/pokemon-types.contant";
 
 export class PokemonTypeService {
-  public async createPokemonType(): Promise<void> {
+  public async createPokemonType(): Promise<PokemonType[]> {
     const pokemonTypes = await this.fetchPokemonTypesData();
 
     await pokemonTypeSchema.create(pokemonTypes);
+
+    return pokemonTypes;
   }
 
   private async fetchPokemonTypesData(): Promise<PokemonType[]> {
@@ -36,14 +38,10 @@ export class PokemonTypeService {
   private async handlePokemonTypeData({
     url,
   }: PokemonUrlResponse): Promise<PokemonType> {
-    const pokemonTypeUrl = url.toString();
-
     const {
       name,
       damage_relations: { double_damage_from },
-    } = await axios
-      .get(pokemonTypeUrl)
-      .then(({ data }: PokemonTypeResponse) => data);
+    } = await axios.get(url).then(({ data }: PokemonTypeResponse) => data);
 
     const doubleDamageFrom = this.getTypeDoubleDamageFrom(double_damage_from);
     const getWeaknessess = await Promise.all(doubleDamageFrom);
@@ -57,10 +55,16 @@ export class PokemonTypeService {
   private getTypeDoubleDamageFrom(
     doubleDamageFrom: DamageRelationsResponse["double_damage_from"],
   ): PokemonTypes[] {
+    if (!doubleDamageFrom) return [];
     return doubleDamageFrom.map(({ name }) => name);
   }
 
-  public async getPokemonWeakness(typeId: string): Promise<PokemonType[]> {
+  public async getPokemonWeakness(
+    typeId: PokemonTypes,
+  ): Promise<PokemonType[]> {
+    const validInput = typeId && POKEMON_TYPES.includes(typeId);
+    if (!validInput) return [];
+
     const pokemonTypesWeaknesses = (await pokemonTypeSchema.find({
       name: typeId,
     })) as PokemonType[];
