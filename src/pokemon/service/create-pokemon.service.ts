@@ -84,7 +84,18 @@ export class CreatePokemonService {
 
   private addHashtagsAndZerosInPokedexNumber = (
     pokedexNumber: number,
-  ): string => "#" + pokedexNumber.toString().padStart(3, "0");
+  ): string => {
+    if (typeof pokedexNumber !== "number") return "#000";
+
+    const pokedexNumberIsPositive = pokedexNumber >= 0;
+
+    if (!pokedexNumberIsPositive) return "#000";
+
+    const convertPokedexNumberToString = pokedexNumber.toString();
+    const addZerosBeforeString = convertPokedexNumberToString.padStart(3, "0");
+
+    return `#${addZerosBeforeString}`;
+  };
 
   private getPokemonTypes = (types: PokemonResponse["types"]): PokemonTypes[] =>
     types.map(({ type: { name } }) => {
