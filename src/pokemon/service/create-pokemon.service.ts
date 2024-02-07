@@ -85,11 +85,14 @@ export class CreatePokemonService {
   private addHashtagsAndZerosInPokedexNumber = (
     pokedexNumber: number,
   ): string => {
-    if (typeof pokedexNumber !== "number") return "#000";
-
     const pokedexNumberIsPositive = pokedexNumber >= 0;
 
-    if (!pokedexNumberIsPositive) return "#000";
+    if (
+      typeof pokedexNumber !== "number" ||
+      !pokedexNumberIsPositive ||
+      !pokedexNumber
+    )
+      return "#000";
 
     const convertPokedexNumberToString = pokedexNumber.toString();
     const addZerosBeforeString = convertPokedexNumberToString.padStart(3, "0");

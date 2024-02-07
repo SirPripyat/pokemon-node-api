@@ -34,4 +34,14 @@ describe("Should test CreatePokemonService class", () => {
 
     expect(result).toBe("#000");
   });
+
+  it("Should return a #000 if pokedexNumber is null", () => {
+    const pokedexNumber = null;
+
+    const result =
+      // @ts-ignore
+      createPokemonService["addHashtagsAndZerosInPokedexNumber"](pokedexNumber);
+
+    expect(result).toBe("#000");
+  });
 });
