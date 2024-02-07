@@ -21,6 +21,7 @@ describe("Should test PokemonTypeService class", () => {
     __v: 0,
   };
 
+  // createPokemonType
   it("Should create the PokemonTypes and return an array of PokemonTypes", async () => {
     pokemonTypeService.createPokemonType = jest
       .fn()
@@ -31,6 +32,7 @@ describe("Should test PokemonTypeService class", () => {
     expect(valueReturn).toEqual([mockPokemonType]);
   });
 
+  // getTypeDoubleDamageFrom
   it("Should return an array of PokemonTypes from doubleDamageFrom array", () => {
     const doubleDamageFrom: DamageRelationsResponse["double_damage_from"] = [
       {
@@ -81,6 +83,7 @@ describe("Should test PokemonTypeService class", () => {
     expect(result).toEqual([]);
   });
 
+  // getPokemonWeakness
   it("Should return the weaknesses for a given pokemon type", async () => {
     jest.spyOn(pokemonTypeSchema, "find").mockResolvedValue([mockPokemonType]);
 

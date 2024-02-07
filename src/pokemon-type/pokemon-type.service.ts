@@ -38,14 +38,10 @@ export class PokemonTypeService {
   private async handlePokemonTypeData({
     url,
   }: PokemonUrlResponse): Promise<PokemonType> {
-    const pokemonTypeUrl = url.toString();
-
     const {
       name,
       damage_relations: { double_damage_from },
-    } = await axios
-      .get(pokemonTypeUrl)
-      .then(({ data }: PokemonTypeResponse) => data);
+    } = await axios.get(url).then(({ data }: PokemonTypeResponse) => data);
 
     const doubleDamageFrom = this.getTypeDoubleDamageFrom(double_damage_from);
     const getWeaknessess = await Promise.all(doubleDamageFrom);
