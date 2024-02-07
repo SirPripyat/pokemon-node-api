@@ -1,5 +1,5 @@
 import { describe } from "@jest/globals";
-import { PokemonSpeciesService } from "../../../pokemon-species/pokemon-species.service";
+import { PokemonSpeciesService } from "../../pokemon-species/pokemon-species.service";
 
 describe("Should test PokemonSpeciesService class", () => {
   let pokemonSpeciesService: PokemonSpeciesService;
