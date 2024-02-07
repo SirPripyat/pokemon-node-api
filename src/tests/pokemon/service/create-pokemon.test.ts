@@ -1,5 +1,7 @@
 import { describe } from "@jest/globals";
 import { CreatePokemonService } from "../../../pokemon/service/create-pokemon.service";
+import { PokemonResponse } from "../../../types/responses/pokemon-response.type";
+import { PokemonTypes } from "../../../types/pokemon-types.type";
 
 describe("Should test CreatePokemonService class", () => {
   let createPokemonService: CreatePokemonService;
@@ -43,5 +45,53 @@ describe("Should test CreatePokemonService class", () => {
       createPokemonService["addHashtagsAndZerosInPokedexNumber"](pokedexNumber);
 
     expect(result).toBe("#000");
+  });
+
+  // getPokemonTypes
+  it("Should return a array of PokemonTypes on receive a types object", () => {
+    const types: PokemonResponse["types"] = [
+      {
+        type: {
+          name: "fire",
+          url: "",
+        },
+      },
+      {
+        type: {
+          name: "grass",
+          url: "",
+        },
+      },
+      {
+        type: {
+          name: "bug",
+          url: "",
+        },
+      },
+    ];
+
+    const result = createPokemonService["getPokemonTypes"](types);
+
+    expect(result).toEqual(["fire", "grass", "bug"]);
+  });
+
+  it("Should return undefined when types isnt a Array", () => {
+    const types = "fire";
+
+    const result =
+      // @ts-ignore
+      createPokemonService["getPokemonTypes"](types);
+
+    expect(result).toBeUndefined();
+  });
+
+  it("Should return undefined when types isnt received", () => {
+    const types = null;
+
+    const result =
+      //@ts-ignore
+      createPokemonService["getPokemonTypes"](types);
+
+    expect(result).toBeUndefined();
   });
 });

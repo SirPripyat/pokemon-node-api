@@ -64,7 +64,7 @@ export class CreatePokemonService {
     abilities,
   }: PokemonResponse): Promise<BasicInformation> {
     const pokedexNumber = this.addHashtagsAndZerosInPokedexNumber(id);
-    const pokemonTypes = this.getPokemonTypes(types);
+    const pokemonTypes = this.getPokemonTypes(types) ?? ["water"];
     const pokemonAbilities = this.getPokemonAbilities(abilities);
     const { flavor_text_entries } =
       await new PokemonSpeciesService().fetchPokemonSpeciesById(id.toString());
@@ -100,10 +100,17 @@ export class CreatePokemonService {
     return `#${addZerosBeforeString}`;
   };
 
-  private getPokemonTypes = (types: PokemonResponse["types"]): PokemonTypes[] =>
-    types.map(({ type: { name } }) => {
+  private getPokemonTypes = (
+    types: PokemonResponse["types"],
+  ): PokemonTypes[] | void => {
+    const typesIsArray = Array.isArray(types);
+
+    if (!typesIsArray) return;
+
+    return types.map(({ type: { name } }) => {
       return name;
     });
+  };
 
   private getPokemonAbilities = (
     abilities: PokemonResponse["abilities"],
