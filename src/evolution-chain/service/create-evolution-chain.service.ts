@@ -33,8 +33,7 @@ export class CreateEvolutionChainService {
   ): Promise<EvolutionChain> {
     const pokemonSpeciesService = new PokemonSpeciesService();
 
-    const getPokeIdFromUrl =
-      await pokemonSpeciesService.handlePokemonSpeciesUrl(url);
+    const getPokeIdFromUrl = pokemonSpeciesService.handlePokemonSpeciesUrl(url);
 
     const { evolution_chain, name } =
       await pokemonSpeciesService.fetchPokemonSpeciesById(getPokeIdFromUrl);

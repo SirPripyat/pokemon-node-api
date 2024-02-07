@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { PokemonTypeService } from "./pokemon-type.service";
+import { PokemonTypes } from "../types/pokemon-types.type";
 
 class PokemonTypeController {
   public async createPokemonType(req: Request, res: Response) {
@@ -17,7 +18,9 @@ class PokemonTypeController {
       const { typeId } = req.params;
 
       const pokemonTypesWeakness =
-        await new PokemonTypeService().getPokemonWeakness(typeId as string);
+        await new PokemonTypeService().getPokemonWeakness(
+          typeId as PokemonTypes,
+        );
 
       return res.status(200).json(pokemonTypesWeakness);
     } catch (error) {

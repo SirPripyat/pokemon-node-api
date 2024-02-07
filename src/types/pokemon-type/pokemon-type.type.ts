@@ -1,6 +1,6 @@
 import { PokemonTypes } from "../pokemon-types.type";
 
 export type PokemonType = {
-  name: string;
+  name: PokemonTypes;
   weaknessess: PokemonTypes[];
 };
