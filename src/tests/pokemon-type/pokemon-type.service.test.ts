@@ -1,7 +1,7 @@
 import { describe, expect, it } from "@jest/globals";
-import { PokemonTypeService } from "../../../pokemon-type/pokemon-type.service";
-import pokemonTypeSchema from "../../../pokemon-type/pokemon-type.schema";
-import { DamageRelationsResponse } from "../../../types/responses/pokemon-type-response.type";
+import { PokemonTypeService } from "../../pokemon-type/pokemon-type.service";
+import pokemonTypeSchema from "../../pokemon-type/pokemon-type.schema";
+import { DamageRelationsResponse } from "../../types/responses/pokemon-type-response.type";
 
 describe("Should test PokemonTypeService class", () => {
   let pokemonTypeService: PokemonTypeService;
