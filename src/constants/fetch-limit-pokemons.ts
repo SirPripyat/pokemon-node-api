@@ -1,1 +1,0 @@
-export const FETCH_LIMIT_POKEMONS = 151;

@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Pokemon {
+  id String @id @default(uuid())
+
+  index         Int?
+  name          String
+  pokedexNumber String
+  image         String?
+  weight        Float?
+  height        Float?
+  abilities     String[]
+  description   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  stats Stats?
+  types PokemonOnType[]
+
+  @@unique([name, pokedexNumber])
+  @@map("pokemons")
+}
+
+model Stats {
+  id String @id @default(uuid())
+
+  hp             Int
+  attack         Int
+  defense        Int
+  specialAttack  Int @map("special_attack")
+  specialDefense Int @map("special_defense")
+  speed          Int
+
+  pokemon   Pokemon @relation(fields: [pokemonId], references: [id], onDelete: Cascade)
+  pokemonId String  @unique
+
+  @@map("stats")
+}
+
+model PokemonType {
+  id    String @id @default(uuid())
+  name  String @unique
+  color String
+
+  pokemons PokemonOnType[]
+
+  damageReceived TypeRelation[] @relation("DefenderType")
+  damageDealt    TypeRelation[] @relation("AttackerType")
+
+  createdAt DateTime @default(now())
+
+  @@map("pokemon_types")
+}
+
+model TypeRelation {
+  id String @id @default(uuid())
+
+  defenderType   PokemonType @relation("DefenderType", fields: [defenderTypeId], references: [id], onDelete: Cascade)
+  defenderTypeId String
+
+  attackerType   PokemonType @relation("AttackerType", fields: [attackerTypeId], references: [id], onDelete: Cascade)
+  attackerTypeId String
+
+  multiplier Float
+
+  createdAt DateTime @default(now())
+
+  @@unique([defenderTypeId, attackerTypeId])
+  @@map("type_relations")
+}
+
+model PokemonOnType {
+  pokemon   Pokemon @relation(fields: [pokemonId], references: [id], onDelete: Cascade)
+  pokemonId String
+
+  type   PokemonType @relation(fields: [typeId], references: [id], onDelete: Cascade)
+  typeId String
+
+  order Int @default(0)
+
+  assignedAt DateTime @default(now())
+
+  @@id([pokemonId, typeId])
+  @@map("pokemon_on_types")
+}
