@@ -11,9 +11,9 @@ import { StatusCodes } from 'http-status-codes';
 import {
   BaseStats,
   Pokemon,
+  PokemonAPI,
   PokemonIndexAPI,
   PokemonIndexItem,
-  PokemonResponse,
   PokemonType,
 } from '../types';
 import { convertUnitMeasureValue } from '../utils/convert-unit-measure-value';
@@ -66,7 +66,7 @@ export class PokemonService {
 
   private fetchPokemonData(url: string): Promise<Pokemon> {
     return axios
-      .get<PokemonResponse>(url)
+      .get<PokemonAPI>(url)
       .then(({ data }) => this.transformPokemonData(data))
       .catch(error => {
         console.error(ErrorMessages.POKEMON_API_ERROR, error);
@@ -97,7 +97,7 @@ export class PokemonService {
     });
   }
 
-  private async transformPokemonData(data: PokemonResponse): Promise<Pokemon> {
+  private async transformPokemonData(data: PokemonAPI): Promise<Pokemon> {
     const { flavor_text_entries } =
       await this.pokemonSpeciesService.fetchSpeciesById(data.id);
 
@@ -136,7 +136,7 @@ export class PokemonService {
       : '#000';
   };
 
-  private buildBaseStats({ stats }: PokemonResponse): BaseStats {
+  private buildBaseStats({ stats }: PokemonAPI): BaseStats {
     const defaults: BaseStats = {
       hp: 0,
       attack: 0,
@@ -254,7 +254,7 @@ export class PokemonService {
 
   public findByType(type: PokemonType) {
     return this.repository.findMany({
-      take: 6,
+      take: 8,
       where: {
         types: {
           some: {

@@ -1,4 +1,4 @@
-import { PokemonType } from './enums';
+import { PokemonType } from '../enums';
 
 type Types = {
   type: {
@@ -36,7 +36,7 @@ type Stats = {
   };
 };
 
-export type PokemonResponse = {
+export type PokemonAPI = {
   id: number;
   name: string;
   types: Types[];

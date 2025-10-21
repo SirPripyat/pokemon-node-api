@@ -1,5 +1,4 @@
 import express from 'express';
-import routes from './routes';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { prismaClient } from './constants';
@@ -33,7 +32,6 @@ class App {
   }
 
   public routes(): void {
-    this.express.use(routes);
     this.express.use(pokemonRoutes);
     this.express.use(pokemonTypesRoutes);
   }

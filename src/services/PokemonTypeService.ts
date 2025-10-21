@@ -1,6 +1,7 @@
 import axios, { AxiosStatic } from 'axios';
 import {
   allPokemonTypes,
+  getPokemonTypeColor,
   Multiplier,
   PokemonType,
   PokemonTypeDamageAPI,
@@ -15,15 +16,25 @@ export class PokemonTypeService {
   ) {}
 
   public async create() {
-    allPokemonTypes.map(type => {
-      this.fetchType(type);
-    });
+    const typesMap = new Map();
+
+    for (const type of allPokemonTypes) {
+      const result = await this.repository.upsert({
+        where: { name: type },
+        update: {},
+        create: { name: type, color: getPokemonTypeColor(type) },
+      });
+
+      typesMap.set(type, result.id);
+    }
+
+    allPokemonTypes.map(type => this.fetchType(type, typesMap));
   }
 
-  private fetchType = async (type: PokemonType) => {
-    const types = await this.repository.findMany();
-    const typesMap = new Map(types.map(t => [t.name, t.id]));
-
+  private fetchType = async (
+    type: PokemonType,
+    typesMap: Map<string, string>,
+  ) => {
     const defenderTypeId = typesMap.get(type);
 
     if (!defenderTypeId) return;
